@@ -1,0 +1,18 @@
+apiVersion: v1
+entries:
+  clo-ui:
+  - annotations:
+      catalog.cattle.io/display-name: CLO Node Driver UI
+      catalog.cattle.io/rancher-version: '>=2.15.3 <2.16.0'
+      catalog.cattle.io/ui-extensions-version: '>=3.0.0 <4.0.0'
+    apiVersion: v2
+    appVersion: 0.1.4
+    created: "2026-11-17T14:10:31.358118081Z"
+    description: Native CLO provisioning forms for Rancher 2.15.3
+    digest: abb2cb586de1cec4eadd918ef2af2002ee8831e18a718ca50554731e7ec554b8
+    name: clo-ui
+    type: application
+    urls:
+    - https://ravetechnology.github.io/rancher-clo-ui/charts/clo-ui-0.1.4.tgz
+    version: 0.1.4
+generated: "2026-11-17T14:10:31.357804004Z"
