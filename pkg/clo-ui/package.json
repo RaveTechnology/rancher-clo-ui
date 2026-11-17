@@ -1,0 +1,30 @@
+{
+  "name": "clo-ui",
+  "description": "CLO node provisioning for Rancher",
+  "version": "0.1.4",
+  "private": true,
+  "license": "Apache-2.0",
+  "rancher": {
+    "annotations": {
+      "catalog.cattle.io/rancher-version": ">=2.15.3 <2.16.0",
+      "catalog.cattle.io/ui-extensions-version": ">=3.0.0 <4.0.0"
+    }
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "5.0.9",
+    "@vue/cli-service": "5.0.8",
+    "@vue/cli-plugin-typescript": "5.0.9"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RaveTechnology/rancher-clo-ui.git"
+  }
+}

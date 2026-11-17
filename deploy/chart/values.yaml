@@ -1,0 +1,7 @@
+# A reviewed immutable directory containing files.txt and plugin/package.json.
+# Use HTTPS for normal distribution. The isolated lab uses private HTTP only
+# after Rancher has downloaded and verified its cache.
+endpoint: ""
+proxyEndpoint:
+  create: true
+labels: {}

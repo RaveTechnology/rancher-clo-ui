@@ -1,0 +1,9 @@
+apiVersion: management.cattle.io/v3
+kind: ProxyEndpoint
+metadata:
+  name: clo-ui-endpoints
+  labels:
+    app.kubernetes.io/name: clo-ui
+spec:
+  routes:
+    - domain: api.clo.ru

@@ -1,0 +1,39 @@
+{{- if ne .Release.Namespace "cattle-ui-plugin-system" }}
+{{- fail "Install clo-ui in cattle-ui-plugin-system on the intended Rancher management cluster" }}
+{{- end }}
+apiVersion: catalog.cattle.io/v1
+kind: UIPlugin
+metadata:
+  name: clo-ui
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: clo-ui
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  plugin:
+    name: clo-ui
+    version: {{ .Chart.AppVersion | quote }}
+    endpoint: {{ required "Set endpoint to the reviewed immutable extension directory" .Values.endpoint | quote }}
+    noCache: false
+    noAuth: false
+    metadata:
+      catalog.cattle.io/display-name: CLO Node Driver UI
+      catalog.cattle.io/rancher-version: ">=2.15.3 <2.16.0"
+      catalog.cattle.io/ui-extensions-version: ">=3.0.0 <4.0.0"
+{{- if .Values.proxyEndpoint.create }}
+---
+apiVersion: management.cattle.io/v3
+kind: ProxyEndpoint
+metadata:
+  name: clo-ui-endpoints
+  labels:
+    app.kubernetes.io/name: clo-ui
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  routes:
+    - domain: api.clo.ru
+{{- end }}
