@@ -1,0 +1,12 @@
+plugin/LICENSE
+plugin/NOTICE
+plugin/THIRD_PARTY_NOTICES.txt
+plugin/clo-ui-0.1.6.umd.min.37.js
+plugin/clo-ui-0.1.6.umd.min.615.js
+plugin/clo-ui-0.1.6.umd.min.714.js
+plugin/clo-ui-0.1.6.umd.min.803.js
+plugin/clo-ui-0.1.6.umd.min.cloud-credential.js
+plugin/clo-ui-0.1.6.umd.min.js
+plugin/clo-ui-0.1.6.umd.min.machine-config.js
+plugin/img/clo.ee35237a.svg
+plugin/package.json
