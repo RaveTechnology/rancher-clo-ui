@@ -1,4 +1,4 @@
-import importlib.util,json,pathlib,tempfile,unittest
+import gzip,importlib.util,io,json,pathlib,tarfile,tempfile,unittest
 
 class DistributionTests(unittest.TestCase):
  def setUp(self):
@@ -33,5 +33,21 @@ class DistributionTests(unittest.TestCase):
   secret=self.source.parent/'private';secret.write_bytes(b'private input');(self.source/'unexpected.js').symlink_to(secret)
   with self.assertRaises(ValueError):self.prepare()
   self.assertFalse((self.site/'clo-ui/1.2.3').exists())
+ def chart(self,path,body,mtime):
+  with path.open('wb') as out,gzip.GzipFile(fileobj=out,mode='wb',mtime=mtime) as zipped,tarfile.open(fileobj=zipped,mode='w') as archive:
+   info=tarfile.TarInfo('clo-ui/Chart.yaml');info.size=len(body);info.mtime=mtime;info.mode=0o644;archive.addfile(info,io.BytesIO(body))
+ def test_chart_retry_keeps_the_first_published_bytes(self):
+  self.assertTrue(hasattr(self.module,'publish_chart'),'immutable chart retry handling is missing')
+  previous=self.source.parent/'published.tgz';candidate=self.source.parent/'candidate.tgz'
+  self.chart(previous,b'version: 1.2.3',1);original=previous.read_bytes();self.chart(candidate,b'version: 1.2.3',2)
+  self.assertNotEqual(candidate.read_bytes(),original)
+  self.module.publish_chart(candidate,previous)
+  self.assertEqual(previous.read_bytes(),original);self.assertEqual(candidate.read_bytes(),original)
+ def test_chart_content_change_cannot_overwrite_published_version(self):
+  self.assertTrue(hasattr(self.module,'publish_chart'),'immutable chart retry handling is missing')
+  previous=self.source.parent/'published.tgz';candidate=self.source.parent/'candidate.tgz'
+  self.chart(previous,b'version: 1.2.3',1);original=previous.read_bytes();self.chart(candidate,b'version: 9.9.9',2)
+  with self.assertRaises(ValueError):self.module.publish_chart(candidate,previous)
+  self.assertEqual(previous.read_bytes(),original)
 
 if __name__=='__main__':unittest.main()

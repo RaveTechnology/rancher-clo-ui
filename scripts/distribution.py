@@ -35,6 +35,25 @@ def archive_directory(source,destination):
    if not path.is_file():continue
    data=path.read_bytes();info=tarfile.TarInfo(path.relative_to(source).as_posix());info.size=len(data);info.mode=0o644;info.mtime=0;tar.addfile(info,io.BytesIO(data))
 
+def chart_content(path):
+ files={}
+ with tarfile.open(path,'r:gz') as archive:
+  for member in archive:
+   name=pathlib.PurePosixPath(member.name)
+   if name.is_absolute() or '..' in name.parts:raise ValueError('unsafe chart member')
+   if member.isdir():continue
+   if not member.isfile() or member.name in files:raise ValueError('unsupported or duplicate chart member')
+   files[member.name]=(member.mode,archive.extractfile(member).read())
+ return files
+
+def publish_chart(candidate,destination):
+ candidate=pathlib.Path(candidate);destination=pathlib.Path(destination)
+ if destination.exists():
+  if chart_content(candidate)!=chart_content(destination):raise ValueError('published chart content differs; increment version')
+  if candidate.resolve()!=destination.resolve():shutil.copyfile(destination,candidate)
+ else:
+  destination.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(candidate,destination)
+
 def main():
  import yaml
  parser=argparse.ArgumentParser();parser.add_argument('--version',required=True);parser.add_argument('--site',default='_site');parser.add_argument('--repository',default='RaveTechnology/rancher-clo-ui');args=parser.parse_args()
@@ -52,8 +71,7 @@ def main():
   values=yaml.safe_load((chartdir/'values.yaml').read_text());values['endpoint']=base+'/clo-ui/'+version;(chartdir/'values.yaml').write_text(yaml.safe_dump(values,sort_keys=False))
   subprocess.run(['helm','package',str(chartdir),'--destination',str(dist)],check=True)
  charts=site/'charts';charts.mkdir(exist_ok=True);name='clo-ui-'+version+'.tgz';destination=charts/name
- if destination.exists() and destination.read_bytes()!=(dist/name).read_bytes():raise ValueError('published chart differs; increment version')
- shutil.copyfile(dist/name,destination)
+ publish_chart(dist/name,destination)
  subprocess.run(['helm','repo','index',str(charts),'--url',base+'/charts'],check=True)
  (site/'.nojekyll').write_text('');(site/'index.html').write_text('<!doctype html><meta charset="utf-8"><title>CLO Rancher UI</title><a href="charts/index.yaml">Helm repository</a>')
  (dist/'SHA256SUMS').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n' for p in sorted(dist.iterdir()) if p.is_file() and p.name!='SHA256SUMS'))

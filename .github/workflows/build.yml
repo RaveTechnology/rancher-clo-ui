@@ -93,7 +93,7 @@ jobs:
         fi
         mkdir pages-output
         rsync -a --exclude=.git _site/ pages-output/
-        gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md dist/clo-ui-*.tar.gz dist/clo-ui-*.tgz dist/clo-ui-*.files.sha256 dist/SHA256SUMS
+        python3 scripts/release.py "$GITHUB_REF_NAME" --repository "$GITHUB_REPOSITORY" --notes-file RELEASE_NOTES.md dist/clo-ui-*.tar.gz dist/clo-ui-*.tgz dist/clo-ui-*.files.sha256 dist/SHA256SUMS
       env:
         GH_TOKEN: ${{ github.token }}
       name: Preserve immutable site versions and publish release
