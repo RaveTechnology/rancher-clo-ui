@@ -20,7 +20,7 @@ yarn serve-pkgs
 ```
 
 The generated bundle is
-`dist-pkg/clo-ui-0.1.4/clo-ui-0.1.4.umd.min.js`. Keep the complete output together:
+`dist-pkg/clo-ui-0.1.5/clo-ui-0.1.5.umd.min.js`. Keep the complete output together:
 the main bundle loads its chunks and styles. Developer Load can use a reachable
 HTTPS endpoint. The included Helm chart installs through Rancher's native cache;
 no separate extension operator is required. Nothing is published automatically.
@@ -38,7 +38,7 @@ chart appVersion together for changes.
 helm upgrade --install clo-ui ./deploy/chart \
   --kubeconfig=/PRIVATE/LAB/management.yaml --kube-context=YOUR_MANAGEMENT_CONTEXT \
   --namespace=cattle-ui-plugin-system --create-namespace \
-  --set-string endpoint=https://YOUR_ARTIFACT_HOST/clo-ui/0.1.4-CHECKSUM
+  --set-string endpoint=https://YOUR_ARTIFACT_HOST/clo-ui/0.1.5-CHECKSUM
 kubectl --kubeconfig=/PRIVATE/LAB/management.yaml --context=YOUR_MANAGEMENT_CONTEXT \
   -n cattle-ui-plugin-system get uiplugin clo-ui -o yaml
 ```
@@ -114,6 +114,6 @@ explicit Rancher management context and cattle-ui-plugin-system namespace.
 [Releases](https://github.com/RaveTechnology/rancher-clo-ui/releases) include the
 complete UI archive, chart, file checksums and archive SHA256SUMS.
 
-Version0.1.4 changes public packaging/license metadata only, preserving the
+Version0.1.5 changes public packaging/license metadata only, preserving the
 accepted0.1.3 form behavior. GitHub Actions tests the forms, lint, build and
 immutable distribution. Old Pages versions are retained.

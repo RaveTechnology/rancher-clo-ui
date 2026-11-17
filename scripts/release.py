@@ -29,16 +29,32 @@ def api(path,optional=False):
   raise RuntimeError('GitHub API request failed: '+path)
  return json.loads(process.stdout)
 
+def select_release(tag,published,listed):
+ if published is not None:
+  if published.get('tag_name')!=tag:raise ValueError('release tag mismatch')
+  return published
+ matches=[release for release in listed if release.get('tag_name')==tag]
+ if len(matches)>1:raise ValueError('multiple drafts for the requested release tag')
+ return matches[0] if matches else None
+
+def find_release(repository,tag):
+ published=api('repos/'+repository+'/releases/tags/'+tag,optional=True)
+ if published is not None:return select_release(tag,published,[])
+ # The by-tag endpoint can omit drafts, including a draft just created by us.
+ process=subprocess.run(['gh','api','--paginate','--slurp','repos/'+repository+'/releases?per_page=100'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=True)
+ listed=[release for page in json.loads(process.stdout) for release in page]
+ return select_release(tag,None,listed)
+
 def main():
  parser=argparse.ArgumentParser();parser.add_argument('tag');parser.add_argument('--repository',required=True);parser.add_argument('--notes-file',required=True);parser.add_argument('files',nargs='+');args=parser.parse_args()
  if not re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?',args.tag):raise ValueError('invalid release tag')
  head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
  if api('repos/'+args.repository+'/commits/'+args.tag)['sha']!=head:raise ValueError('remote tag does not match this checkout')
- path='repos/'+args.repository+'/releases/tags/'+args.tag;release=api(path,optional=True)
+ release=find_release(args.repository,args.tag)
  if release is None:
   # Draft creation is a single write. If its response is lost, reconcile before upload.
   result=subprocess.run(['gh','release','create',args.tag,'--repo',args.repository,'--verify-tag','--draft','--title',args.tag,'--notes-file',args.notes_file])
-  release=api(path,optional=True)
+  release=find_release(args.repository,args.tag)
   if release is None:raise RuntimeError('release creation could not be reconciled')
  if release['tag_name']!=args.tag:raise ValueError('release tag mismatch')
  def assets():

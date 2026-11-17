@@ -26,5 +26,16 @@ class ReleaseRecoveryTests(unittest.TestCase):
   self.body=b'different bytes'
   with self.assertRaises(ValueError):self.missing([{'name':self.file.name,'browser_download_url':self.url}],[self.file])
   self.assertEqual(self.file.read_bytes(),b'published bundle')
+ def test_draft_is_found_when_the_tag_endpoint_does_not_return_it(self):
+  self.assertTrue(hasattr(self.module,'select_release'),'draft-aware release lookup is missing')
+  draft={'id':7,'tag_name':'v1.2.3','draft':True}
+  self.assertEqual(self.module.select_release('v1.2.3',None,[{'id':6,'tag_name':'v1.2.2','draft':False},draft]),draft)
+ def test_existing_published_tag_is_selected_without_a_new_draft(self):
+  self.assertTrue(hasattr(self.module,'select_release'),'draft-aware release lookup is missing')
+  published={'id':7,'tag_name':'v1.2.3','draft':False}
+  self.assertEqual(self.module.select_release('v1.2.3',published,[]),published)
+ def test_ambiguous_drafts_do_not_authorize_arbitrary_upload(self):
+  self.assertTrue(hasattr(self.module,'select_release'),'draft-aware release lookup is missing')
+  with self.assertRaises(ValueError):self.module.select_release('v1.2.3',None,[{'id':7,'tag_name':'v1.2.3','draft':True},{'id':8,'tag_name':'v1.2.3','draft':True}])
 
 if __name__=='__main__':unittest.main()
