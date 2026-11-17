@@ -5,6 +5,15 @@ initialize an orphan gh-pages branch with .nojekyll/index.html, enable GitHub
 Pages with build_type=workflow and allow version tags in the github-pages
 environment. The first publication operator performs this bootstrap.
 
+Check `gh api repos/OWNER/REPO/pages --jq .build_type` after creating gh-pages.
+Creating that branch can enable a legacy Pages site automatically; update an
+existing site to `build_type=workflow` through the Pages settings or REST PUT.
+For the github-pages environment, select custom branch/tag policies and add
+`v*` with type **tag**. A null policy can still leave deployments restricted to
+the old Pages source branch. Verify both settings before the first tag release.
+See the official [Pages API](https://docs.github.com/en/rest/pages/pages) and
+[deployment policy API](https://docs.github.com/en/rest/deployments/branch-policies).
+
 Bump pkg/clo-ui/package.json and both chart versions together; push the exact
 vVERSION tag. The check job tests/builds once and the publication job consumes
 that artifact. Site history is retained on gh-pages without force-push.
