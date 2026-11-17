@@ -1,4 +1,5 @@
 import importlib.util,pathlib,tempfile,threading,unittest
+from unittest.mock import patch
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 
 class ReleaseRecoveryTests(unittest.TestCase):
@@ -37,5 +38,18 @@ class ReleaseRecoveryTests(unittest.TestCase):
  def test_ambiguous_drafts_do_not_authorize_arbitrary_upload(self):
   self.assertTrue(hasattr(self.module,'select_release'),'draft-aware release lookup is missing')
   with self.assertRaises(ValueError):self.module.select_release('v1.2.3',None,[{'id':7,'tag_name':'v1.2.3','draft':True},{'id':8,'tag_name':'v1.2.3','draft':True}])
+
+
+ def test_created_draft_can_appear_after_several_reads(self):
+  self.assertTrue(hasattr(self.module,'await_release'),'post-create read reconciliation is missing')
+  draft={'id':7,'tag_name':'v1.2.3','draft':True}
+  with patch.object(self.module,'find_release',side_effect=[None,None,draft]) as lookup,patch.object(self.module.time,'sleep'):
+   self.assertEqual(self.module.await_release('owner/repo','v1.2.3'),draft)
+   self.assertEqual(lookup.call_count,3)
+ def test_unobservable_draft_reconciliation_is_bounded(self):
+  self.assertTrue(hasattr(self.module,'await_release'),'post-create read reconciliation is missing')
+  with patch.object(self.module,'find_release',return_value=None) as lookup,patch.object(self.module.time,'sleep'):
+   self.assertIsNone(self.module.await_release('owner/repo','v1.2.3'))
+   self.assertEqual(lookup.call_count,4)
 
 if __name__=='__main__':unittest.main()

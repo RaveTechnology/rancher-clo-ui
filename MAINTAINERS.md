@@ -24,7 +24,9 @@ so older attempt artifacts cannot make the next deployment ambiguous.
 Chart gzip/tar timestamps are ignored only when comparing unchanged content;
 the original published chart bytes are retained. Existing Release assets are
 downloaded and checked; only missing files are uploaded. Changed assets require
-a new version. An initial draft is published after all assets are verified.
+a new version. An initial draft is published after all assets are verified. Draft creation is
+a single write, followed by bounded read retries for delayed API metadata; if
+reconciliation still fails, rerun the failed job after inspecting the draft.
 
 After success, verify every file listed in the public files.txt and all release
 checksums. Installing the UI into a management cluster is a separate operation.

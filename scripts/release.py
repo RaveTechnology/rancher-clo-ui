@@ -45,6 +45,16 @@ def find_release(repository,tag):
  listed=[release for page in json.loads(process.stdout) for release in page]
  return select_release(tag,None,listed)
 
+
+def await_release(repository,tag):
+ # Read-after-write metadata can lag behind the successful draft creation.
+ # Retry only reads; never repeat the create request here.
+ for delay in (0,1,2,4):
+  if delay:time.sleep(delay)
+  release=find_release(repository,tag)
+  if release is not None:return release
+ return None
+
 def main():
  parser=argparse.ArgumentParser();parser.add_argument('tag');parser.add_argument('--repository',required=True);parser.add_argument('--notes-file',required=True);parser.add_argument('files',nargs='+');args=parser.parse_args()
  if not re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?',args.tag):raise ValueError('invalid release tag')
@@ -54,7 +64,7 @@ def main():
  if release is None:
   # Draft creation is a single write. If its response is lost, reconcile before upload.
   result=subprocess.run(['gh','release','create',args.tag,'--repo',args.repository,'--verify-tag','--draft','--title',args.tag,'--notes-file',args.notes_file])
-  release=find_release(args.repository,args.tag)
+  release=await_release(args.repository,args.tag)
   if release is None:raise RuntimeError('release creation could not be reconciled')
  if release['tag_name']!=args.tag:raise ValueError('release tag mismatch')
  def assets():
