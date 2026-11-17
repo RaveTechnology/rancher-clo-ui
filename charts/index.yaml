@@ -7,7 +7,7 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>=3.0.0 <4.0.0'
     apiVersion: v2
     appVersion: 0.1.6
-    created: "2026-11-17T14:43:24.717334401Z"
+    created: "2026-11-17T14:45:34.461566278Z"
     description: Native CLO provisioning forms for Rancher 2.15.3
     digest: a940bc761ae21ff1f8dc533cacfd14fbbfebb9bbc5ee597d8631f696b55f3653
     name: clo-ui
@@ -21,7 +21,7 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>=3.0.0 <4.0.0'
     apiVersion: v2
     appVersion: 0.1.5
-    created: "2026-11-17T14:43:24.717265617Z"
+    created: "2026-11-17T14:45:34.461440159Z"
     description: Native CLO provisioning forms for Rancher 2.15.3
     digest: 58302c3e3eb36ffe06ea2c801e2c0bbad99479a9728195c2c502f2670f2efd0c
     name: clo-ui
@@ -35,7 +35,7 @@ entries:
       catalog.cattle.io/ui-extensions-version: '>=3.0.0 <4.0.0'
     apiVersion: v2
     appVersion: 0.1.4
-    created: "2026-11-17T14:43:24.717170093Z"
+    created: "2026-11-17T14:45:34.461062181Z"
     description: Native CLO provisioning forms for Rancher 2.15.3
     digest: abb2cb586de1cec4eadd918ef2af2002ee8831e18a718ca50554731e7ec554b8
     name: clo-ui
@@ -43,4 +43,4 @@ entries:
     urls:
     - https://ravetechnology.github.io/rancher-clo-ui/charts/clo-ui-0.1.4.tgz
     version: 0.1.4
-generated: "2026-11-17T14:43:24.716930492Z"
+generated: "2026-11-17T14:45:34.460392999Z"
