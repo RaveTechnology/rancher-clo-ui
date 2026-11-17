@@ -19,6 +19,8 @@ vVERSION tag. The check job tests/builds once and the publication job consumes
 that artifact. Site history is retained on gh-pages without force-push.
 
 Retrying a partial publication keeps every published version byte-for-byte.
+Pages upload and deployment use the same name suffixed with github.run_attempt,
+so older attempt artifacts cannot make the next deployment ambiguous.
 Chart gzip/tar timestamps are ignored only when comparing unchanged content;
 the original published chart bytes are retained. Existing Release assets are
 downloaded and checked; only missing files are uploaded. Changed assets require

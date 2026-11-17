@@ -2,8 +2,8 @@ apiVersion: v2
 name: clo-ui
 description: Native CLO provisioning forms for Rancher 2.15.3
 type: application
-version: 0.1.5
-appVersion: 0.1.5
+version: 0.1.6
+appVersion: 0.1.6
 annotations:
   catalog.cattle.io/display-name: CLO Node Driver UI
   catalog.cattle.io/rancher-version: '>=2.15.3 <2.16.0'

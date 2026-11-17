@@ -1,1 +1,1 @@
-Public distribution0.1.5: accepted0.1.3 runtime form behavior, updated license/package metadata, complete immutable HTTPS assets and chart. Tested Rancher2.15.3/Shell3.0.12-rc.7. Install into cattle-ui-plugin-system on the intended management context. Apache-2.0.
+Public distribution0.1.6: accepted0.1.3 runtime form behavior, updated license/package metadata, complete immutable HTTPS assets and chart. Tested Rancher2.15.3/Shell3.0.12-rc.7. Install into cattle-ui-plugin-system on the intended management context. Apache-2.0.
